@@ -8,7 +8,7 @@ def tslist(bot,trigger):
 		try:
 			ts3conn.login(
 				client_login_name="gipsy",
-				client_login_password="XXXXX"
+				client_login_password="XXXXXXX"
 			)
 		except ts3.query.TS3QueryError as err:
 			print("Login failed:", err.resp.error["msg"])
@@ -16,8 +16,10 @@ def tslist(bot,trigger):
 
 		print("Login OK")
 		ts3conn.use(sid=1)
-		print("Selection server OK")
+		print("Server select  OK")
 		resp=ts3conn.clientlist()
 		for client in resp.parsed:
-			bot.say(client["client_nickname"])
+			#Ignore ServerQuery Client in the result
+			if client["client_type"] != "1":
+				bot.say(client["client_nickname"])
 
