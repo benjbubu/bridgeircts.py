@@ -8,3 +8,5 @@ This plugin will :
 -Got a trigger to see who is online in TS3 Server
 
 -Got a bridge between the 2 chats. This will allow to see the sentences from TS to IRC et vice-versa
+
+-Got some funny and necessary triggers :)
