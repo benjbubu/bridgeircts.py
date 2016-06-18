@@ -9,7 +9,7 @@ def tslist(bot,trigger):
 		try:
 			ts3conn.login(
 				client_login_name="serveradmin",
-				client_login_password="XXXXX"
+				client_login_password="XXXXXX"
 			)
 		except ts3.query.TS3QueryError as err:
 			bot.say("Login failed: "+ err.resp.error["msg"])
@@ -99,24 +99,44 @@ def tsstart(bot, trigger):
 		ts3conn.servernotifyregister(event="textserver")
 		bot.say("Connexion TS<->IRC lancée")
 
+		# Dict des clid <-> pseudos
+		clidpseudo = {}
+		# clidServer
+		clidServer = -1
+
 		while tsListening:
 			event = ts3conn.wait_for_event()
 	
 			# DEBUG
 			for value in event:
 				print(value)
-			# tri des events
-			if 'targetmode' in event[0]:
-				bot.say("message provenant de TS")
+			# tri des events avec ajout de condition szupplémentaire dans le IF pour éviter que les serverquery apparaissent soit en join.quit soit en message (ex : message tstalk arrivant dans le chat Teamspeak est considéré comme un event et donc le bot tente de le dire aussi sur IRC
+			if 'targetmode' in event[0] and event[0]["invokerid"] != 0:
+				# invokerid= 0 --> Server
+				# Du texte a été prononcé sur TS
+				bot.say("<TS> " + event[0]["invokername"] + ": " + event[0]["msg"])
 			elif 'reasonid' in event[0]:
-				print("test")
-			elif event[0]["reasonid"] == "0":
-				bot.say("Machin a rejoint TS")
-			else:
-			#event[0]["reasonid"] == "8":
-				bot.say("Machin a quitté TS")
-			#else:
-			#	bot.say("Je ne connais pas cet event")
+				# Quelqu'un rentre ou sort du serveur
+
+				if event[0]["reasonid"] == "0":
+					# Entrée sur le serveur
+					if "serveradmin from 127.0.0.1" in event[0]["client_nickname"]:
+						# C'est le serveur qui se connecte
+						clidServer = event[0]["clid"]
+					else:
+						# C'est un humain qui se connecte
+						# On associe son pseudo à son clid
+						bot.say(event[0]["client_nickname"] + " est entré sur Teamspeak")
+						clidpseudo[event[0]["clid"]] = event[0]["client_nickname"]
+					
+				else:
+					# le client QUITTE le serveur
+					if event[0]["clid"] != clidServer:
+						# Ce n'est pas le Server, c'est un humain
+						bot.say(clidpseudo[event[0]["clid"]] + " a quitté Teamspeak")
+						del clidpseudo[event[0]["clid"]
+
+
 @commands('tsstop')
 def tsstop(bot, trigger):
 	ts3conn.servernotifyunregister()
