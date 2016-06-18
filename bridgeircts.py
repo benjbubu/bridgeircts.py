@@ -12,7 +12,7 @@ def tslist(bot,trigger):
 		try:
 			ts3conn.login(
 				client_login_name="serveradmin",
-				client_login_password="wakuun42!"
+				client_login_password=""
 			)
 		except ts3.query.TS3QueryError as err:
 			bot.say("Login failed: "+ err.resp.error["msg"])
@@ -56,7 +56,7 @@ def tstalk(bot,trigger):
 		try:
 			ts3conn.login(
 				client_login_name="serveradmin",
-				client_login_password="wakuun42!"
+				client_login_password=""
 			)
 		except ts3.query.TS3QueryError as err:
 			bot.say("Login failed: "+ err.resp.error["msg"])
@@ -89,7 +89,7 @@ def tsstart(bot, trigger):
 		try:
 			ts3conn.login(
 				client_login_name="serveradmin",
-				client_login_password="wakuun42!"
+				client_login_password=""
 			)
 		except ts3.query.TS3QueryError as err:
 			bot.say("Login failed: "+ err.resp.error["msg"])
@@ -149,7 +149,7 @@ def tsstop(bot, trigger):
 		try:
 			ts3conn.login(
 				client_login_name="serveradmin",
-				client_login_password="wakuun42!"
+				client_login_password=""
 			)
 		except ts3.query.TS3QueryError as err:
 			bot.say("Login failed: "+ err.resp.error["msg"])
@@ -175,7 +175,7 @@ def tswhirl(bot, trigger, duration=5, relax_time=0.2):
 		try:
 			ts3conn.login(
 				client_login_name="serveradmin",
-				client_login_password="wakuun42!"
+				client_login_password=""
 			)
 		except ts3.query.TS3QueryError as err:
 			bot.say("Login failed: "+ err.resp.error["msg"])
@@ -238,7 +238,7 @@ def THUNDER(bot, trigger):
 		try:
 			ts3conn.login(
 				client_login_name="serveradmin",
-				client_login_password="wakuun42!"
+				client_login_password=""
 			)
 		except ts3.query.TS3QueryError as err:
 			bot.say("Login failed: "+ err.resp.error["msg"])
