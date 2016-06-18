@@ -110,7 +110,7 @@ def tsstart(bot, trigger):
 			ts3conn.send_keepalive()
 			try:
 				event = ts3conn.wait_for_event(timeout=540)
-			except TS3TimeoutError:
+			except:
 				pass
 			else:
 				# Handle the received event here ...
