@@ -107,38 +107,44 @@ def tsstart(bot, trigger):
 		clidServer = -1
 
 		while tsListening:
-			event = ts3conn.wait_for_event()
-	
-			# tri des events avec ajout de condition szupplémentaire dans le IF pour éviter que les serverquery apparaissent soit en join.quit soit en message (ex : message tstalk arrivant dans le chat Teamspeak est considéré comme un event et donc le bot tente de le dire aussi sur IRC
-			if 'targetmode' in event[0] and event[0]["invokerid"] != '0':
-				# invokerid= 0 --> Server
-				# Du texte a été prononcé sur TS
-				bot.say("<TS " + event[0]["invokername"] + "> " + event[0]["msg"])
-			elif 'reasonid' in event[0]:
-				# Quelqu'un rentre ou sort du serveur
+			ts3conn.send_keepalive()
+			try:
+				event = ts3conn.wait_for_event(timeout=540)
+			except TS3TimeoutError:
+				pass
+			else:
+				# Handle the received event here ...
 
-				if event[0]["reasonid"] == "0":
-					# Entrée sur le serveur
-					if "serveradmin from 127.0.0.1" in event[0]["client_nickname"]:
-						# C'est le serveur qui se connecte
-						clidServer = event[0]["clid"]
-					else:
-						# C'est un humain qui se connecte
-						# On associe son pseudo à son clid
-						bot.say(event[0]["client_nickname"] + " est entré sur Teamspeak")
-						clidpseudo[event[0]["clid"]] = event[0]["client_nickname"]
-					
-				else:
-					# le client QUITTE le serveur
-					if event[0]["clid"] != clidServer:
-						# Ce n'est pas le Server, c'est un humain
-						if event[0]['clid'] in clidpseudo:
-							# le pseudo est enregistré
-							bot.say(clidpseudo[event[0]["clid"]] + " a quitté Teamspeak")
-							del clidpseudo[event[0]["clid"]]
+				# tri des events avec ajout de condition szupplémentaire dans le IF pour éviter que les serverquery apparaissent soit en join.quit soit en message (ex : message tstalk arrivant dans le chat Teamspeak est considéré comme un event et donc le bot tente de le dire aussi sur IRC
+				if 'targetmode' in event[0] and event[0]["invokerid"] != '0':
+					# invokerid= 0 --> Server
+					# Du texte a été prononcé sur TS
+					bot.say("<TS " + event[0]["invokername"] + "> " + event[0]["msg"])
+				elif 'reasonid' in event[0]:
+					# Quelqu'un rentre ou sort du serveur
+
+					if event[0]["reasonid"] == "0":
+						# Entrée sur le serveur
+						if "serveradmin from 127.0.0.1" in event[0]["client_nickname"]:
+							# C'est le serveur qui se connecte
+							clidServer = event[0]["clid"]
 						else:
-							# le pseudo n'est pas enregistré
-							bot.say("Ta grandmère a quitté Teamspeak")
+							# C'est un humain qui se connecte
+							# On associe son pseudo à son clid
+							bot.say(event[0]["client_nickname"] + " est entré sur Teamspeak")
+							clidpseudo[event[0]["clid"]] = event[0]["client_nickname"]
+						
+					else:
+						# le client QUITTE le serveur
+						if event[0]["clid"] != clidServer:
+							# Ce n'est pas le Server, c'est un humain
+							if event[0]['clid'] in clidpseudo:
+								# le pseudo est enregistré
+								bot.say(clidpseudo[event[0]["clid"]] + " a quitté Teamspeak")
+								del clidpseudo[event[0]["clid"]]
+							else:
+								# le pseudo n'est pas enregistré
+								bot.say("Ta grandmère a quitté Teamspeak")
 
 
 @commands('tsstop')
