@@ -255,14 +255,15 @@ def THUNDER(bot, trigger):
 
 		# Fetch the clientlist and the channellist.
 		clientlist = ts3conn.clientlist()
-
 		# Ignore query clients
 		clientlist = [client for client in clientlist \
-			  if client["client_type"] != "1"]
-
+		if client["client_type"] != "1"]
+		if not clientlist:
+			bot.say("Un bot a besoin de personnes vivantes pour frapper. Valar Fuckulis boulet")
+		else:
 		# On choisit un client au hasard :)
-		clid = random.choice(clientlist)["clid"]
+			clid = random.choice(clientlist)["clid"]
 			
 		#Greyskull Power
-		ts3conn.clientpoke(msg="PAR LE POUVOIR DU CRANE ANCESTRAL BITCH", clid=clid)		
-		ts3conn.clientkick(reasonid=5, reasonmsg="PAR LE POUVOIR DU CRANE ANCESTRAL BITCH", clid=clid)
+			ts3conn.clientpoke(msg="PAR LE POUVOIR DU CRANE ANCESTRAL BITCH", clid=clid)		
+			ts3conn.clientkick(reasonid=5, reasonmsg="PAR LE POUVOIR DU CRANE ANCESTRAL BITCH", clid=clid)
