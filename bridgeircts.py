@@ -125,7 +125,7 @@ def tsstart(bot, trigger):
 
 					if event[0]["reasonid"] == "0":
 						# Entrée sur le serveur
-						if "serveradmin from 127.0.0.1" in event[0]["client_nickname"]:
+						if "serveradmin from" in event[0]["client_nickname"]:
 							# C'est le serveur qui se connecte
 							clidServer = event[0]["clid"]
 						else:
